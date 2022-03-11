@@ -12,11 +12,11 @@
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/material_dynamic_neutral_variant70">
+        app:cardBackgroundColor="#639A9FA3">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp">
+            android:layout_height="55dp">
 
             <TextView
                 android:id="@+id/tvName"

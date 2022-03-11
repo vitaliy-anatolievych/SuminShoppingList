@@ -3,6 +3,7 @@ package com.udemy.data.repositories
 import com.udemy.domain.entities.ShopItem
 import com.udemy.domain.repositories.ShopListRepository
 import java.lang.RuntimeException
+import kotlin.random.Random
 
 class ShopListRepositoryImpl: ShopListRepository {
     private val list = mutableListOf<ShopItem>()
@@ -11,7 +12,7 @@ class ShopListRepositoryImpl: ShopListRepository {
 
     init {
         for (i in 0..20) {
-            val shopItem = ShopItem("$i", i, true)
+            val shopItem = ShopItem("Элемент $i", i,Random.nextBoolean())
             addShopItem(shopItem)
         }
     }
