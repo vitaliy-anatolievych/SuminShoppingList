@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showList(list: List<ShopItem>) {
-        shopListAdapter.shopList = list
+        shopListAdapter.submitList(list) // внутри адаптера запускается новый поток
     }
 
     private fun settingsAdapter() {
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             ): Boolean = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val item = shopListAdapter.shopList[viewHolder.adapterPosition]
+                val item = shopListAdapter.currentList[viewHolder.adapterPosition]
                 mainViewModel.deleteItem(item)
             }
         }
@@ -74,28 +74,6 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.changeEnableState(it)
         }
     }
-
-//    private fun showList(list: List<ShopItem>) {
-//        binding.llShopList.removeAllViews()
-//        for (shopItem in list) {
-//            val layoutId = if (shopItem.enabled) {
-//                R.layout.shop_item_enabled
-//            } else {
-//                R.layout.shop_item_disabled
-//            }
-//            val view = LayoutInflater.from(this).inflate(layoutId, binding.llShopList, false)
-//            val tvName = view.findViewById<TextView>(R.id.tvName)
-//            val tvCount = view.findViewById<TextView>(R.id.tvCount)
-//
-//            tvName.text = shopItem.name
-//            tvCount.text = shopItem.count.toString()
-//            view.setOnLongClickListener {
-//                mainViewModel.changeEnableState(shopItem)
-//                true
-//            }
-//            binding.llShopList.addView(view)
-//        }
-//    }
 }
 
 /**

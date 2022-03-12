@@ -5,21 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.udemy.domain.entities.ShopItem
 import com.udemy.suminshoppinglist.R
 
 
-class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
-
-    var shopList = listOf<ShopItem>()
-        set(value) {
-            val callback = ShopListDiffCallback(shopList, value)
-            val diffResult = DiffUtil.calculateDiff(callback) // вычисляем результат
-            diffResult.dispatchUpdatesTo(this) // вызываем нужный метод для перерисовки
-            field = value
-//            notifyDataSetChanged()
-        }
+class ShopListAdapter : ListAdapter<ShopItem, ShopListAdapter.ShopItemViewHolder>(ShopItemDiffCallback()) {
 
     var onShopLongClickListener: ( (ShopItem) -> Unit)? = null
     var onShopClickListener: ( (ShopItem) -> Unit)? = null
@@ -42,7 +34,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        val shopItem = shopList[position]
+        val shopItem = getItem(position)
 
         holder.tvName?.text = shopItem.name
         holder.tvCount?.text = shopItem.count.toString()
@@ -57,16 +49,11 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         }
     }
 
-    // Метод вызывается когда View будет переиспользоваться.
-    // Можно установить значения по умолчанию.
-//    override fun onViewRecycled(holder: ShopItemViewHolder) {
-//        super.onViewRecycled(holder)
-//    }
-
 
     // нужен для того, чтобы использовать нужный макет в зависимости от типа элемента
     override fun getItemViewType(position: Int): Int {
-        val shopItem = shopList[position]
+//        val shopItem = shopList[position]
+        val shopItem = getItem(position)
 
         return if (shopItem.enabled) {
             VIEW_TYPE_ENABLED
@@ -74,8 +61,6 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
             VIEW_TYPE_DISABLED
         }
     }
-
-    override fun getItemCount(): Int = shopList.size
 
     companion object {
         const val VIEW_TYPE_ENABLED = 1
@@ -88,4 +73,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
  * @param notifyDataSetChanged() больше не рекомендуется к использованию.
  * Рекомендуется использовать более конкретные изменение которые произошли.
  * DifUtil сам вызывает необходимые методы при сравнении списков.
+ *
+ * В ListAdapter<ShopItem, ShopListAdapter.ShopItemViewHolder>(ShopItemDiffCallback())
+ * вся работа со списком скрыва в ListAdapter
  */
