@@ -1,5 +1,6 @@
 package com.udemy.suminshoppinglist.presentation.main
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.udemy.domain.entities.ShopItem
 import com.udemy.suminshoppinglist.R
 import com.udemy.suminshoppinglist.databinding.ActivityMainBinding
+import com.udemy.suminshoppinglist.presentation.itemdetails.ItemDetailsActivity
 import com.udemy.suminshoppinglist.presentation.main.adapter.ShopListAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,9 +24,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
         settingsAdapter()
+        settingButtonAdd()
 
         mainViewModel.shopList.observe(this) {
             showList(it)
+        }
+    }
+
+    private fun settingButtonAdd() {
+        binding.btnAddShopItem.setOnClickListener {
+            val intent = Intent(this, ItemDetailsActivity::class.java)
+            intent.putExtra(ItemDetailsActivity.ACTIVITY_MODE, ItemDetailsActivity.MODE_ADD)
+            startActivity(intent)
         }
     }
 
@@ -65,7 +76,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun onTouchClickListenerShopItem() {
         shopListAdapter.onShopClickListener = {
-            Log.d("ShopItem", it.toString())
+            val intent = Intent(this, ItemDetailsActivity::class.java)
+            intent.putExtra(ItemDetailsActivity.ACTIVITY_MODE, ItemDetailsActivity.MODE_EDIT)
+            intent.putExtra(ItemDetailsActivity.ITEM_OBJECT_NAME, it.name)
+            intent.putExtra(ItemDetailsActivity.ITEM_OBJECT_COUNT, it.count.toString())
+            intent.putExtra(ItemDetailsActivity.ITEM_OBJECT_ID, it.id)
+            startActivity(intent)
         }
     }
 
@@ -73,6 +89,11 @@ class MainActivity : AppCompatActivity() {
         shopListAdapter.onShopLongClickListener = {
             mainViewModel.changeEnableState(it)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.updateShopList()
     }
 }
 

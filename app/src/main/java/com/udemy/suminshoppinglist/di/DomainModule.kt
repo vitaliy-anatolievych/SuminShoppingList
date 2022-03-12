@@ -1,8 +1,6 @@
 package com.udemy.suminshoppinglist.di
 
-import com.udemy.domain.usecases.DeleteShopItemUseCase
-import com.udemy.domain.usecases.EditShopItemUseCase
-import com.udemy.domain.usecases.GetShopListUseCase
+import com.udemy.domain.usecases.*
 import org.koin.dsl.module
 
 val domainModule = module {
@@ -16,5 +14,17 @@ val domainModule = module {
 
     factory<EditShopItemUseCase> {
         EditShopItemUseCase(shopListRepository = get())
+    }
+
+    factory<AddShopItemUseCase> {
+        AddShopItemUseCase(
+            shopListRepository = get()
+        )
+    }
+
+    factory<GetShopItemUseCase> {
+        GetShopItemUseCase(
+            shopListRepository = get()
+        )
     }
 }

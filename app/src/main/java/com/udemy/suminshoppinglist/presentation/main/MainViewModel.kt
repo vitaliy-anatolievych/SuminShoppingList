@@ -23,7 +23,7 @@ class MainViewModel(
         updateShopList()
     }
 
-    private fun updateShopList() {
+    fun updateShopList() {
         val list = getShopListUseCase.getShopList()
         _shopList.value = list
     }
