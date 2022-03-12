@@ -17,6 +17,8 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
             notifyDataSetChanged()
         }
 
+    var onShopLongClickListener: ( (ShopItem) -> Unit)? = null
+    var onShopClickListener: ( (ShopItem) -> Unit)? = null
 
     // Хранит элементы чтобы не вызывать много раз findViewById
     inner class ShopItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -42,7 +44,12 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         holder.tvCount?.text = shopItem.count.toString()
 
         holder.view.setOnLongClickListener {
+            onShopLongClickListener?.invoke(shopItem)
             true
+        }
+
+        holder.view.setOnClickListener {
+            onShopClickListener?.invoke(shopItem)
         }
     }
 
