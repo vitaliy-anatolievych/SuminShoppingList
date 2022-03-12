@@ -51,12 +51,6 @@ class ItemDetailsActivity : AppCompatActivity() {
                         if (isCorrectFieldName(name) && isCorrectFieldCount(count)) {
                             viewModel.editShopItem(name, count.toInt(), id)
                             this.finish()
-                        } else {
-                            Toast.makeText(
-                                this,
-                                "Some Wrong",
-                                Toast.LENGTH_SHORT
-                            ).show()
                         }
                     } else {
                         Toast.makeText(
@@ -75,12 +69,6 @@ class ItemDetailsActivity : AppCompatActivity() {
                     if (isCorrectFieldName(name) && isCorrectFieldCount(count)) {
                         viewModel.addShopItem(name, count.toInt())
                         this.finish()
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "Some Wrong",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
                 }
             }
@@ -91,18 +79,25 @@ class ItemDetailsActivity : AppCompatActivity() {
     private fun isCorrectFieldName(name: String?): Boolean {
         var isCorrect = true
 
-        if (name.isNullOrBlank() or name.isNullOrEmpty()) isCorrect = false
+        if (name.isNullOrBlank() or name.isNullOrEmpty()) {
+            binding.edName.error = "Пустое поле"
+            isCorrect = false
+        }
         return isCorrect
     }
 
     private fun isCorrectFieldCount(count: String?): Boolean {
         var isCorrect = true
 
-        if (count.isNullOrBlank() or count.isNullOrEmpty()) isCorrect = false
+        if (count.isNullOrBlank() or count.isNullOrEmpty()) {
+            binding.edCount.error = "Пустое поле"
+            isCorrect = false
+        }
         else {
             try {
                 count?.toInt()
             } catch (e: Exception) {
+                binding.edCount.error = "Требуется число"
                 isCorrect = false
             }
         }
