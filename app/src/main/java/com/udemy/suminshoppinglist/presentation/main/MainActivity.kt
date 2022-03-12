@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onTouchClickListenerShopItem() {
         shopListAdapter.onShopClickListener = {
-
+            Log.d("ShopItem", it.toString())
         }
     }
 

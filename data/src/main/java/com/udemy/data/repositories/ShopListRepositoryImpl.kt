@@ -11,7 +11,7 @@ class ShopListRepositoryImpl: ShopListRepository {
 
 
     init {
-        for (i in 0..200) {
+        for (i in 0..15) {
             val shopItem = ShopItem("Элемент $i", i,Random.nextBoolean())
             addShopItem(shopItem)
         }
@@ -45,6 +45,6 @@ class ShopListRepositoryImpl: ShopListRepository {
     }
 
     override fun getShopList(): List<ShopItem> {
-        return list
+        return list.toList()
     }
 }

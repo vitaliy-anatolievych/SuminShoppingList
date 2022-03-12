@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.udemy.domain.entities.ShopItem
 import com.udemy.suminshoppinglist.R
@@ -13,8 +14,11 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
 
     var shopList = listOf<ShopItem>()
         set(value) {
+            val callback = ShopListDiffCallback(shopList, value)
+            val diffResult = DiffUtil.calculateDiff(callback) // вычисляем результат
+            diffResult.dispatchUpdatesTo(this) // вызываем нужный метод для перерисовки
             field = value
-            notifyDataSetChanged()
+//            notifyDataSetChanged()
         }
 
     var onShopLongClickListener: ( (ShopItem) -> Unit)? = null
@@ -79,3 +83,9 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
         const val MAX_POOL_SIZE = 24
     }
 }
+/**
+ * Без DifUtil Recycler перерисовывает все видимые элементы при изменении элемента.
+ * @param notifyDataSetChanged() больше не рекомендуется к использованию.
+ * Рекомендуется использовать более конкретные изменение которые произошли.
+ * DifUtil сам вызывает необходимые методы при сравнении списков.
+ */

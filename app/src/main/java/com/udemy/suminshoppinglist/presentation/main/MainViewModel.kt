@@ -1,6 +1,5 @@
 package com.udemy.suminshoppinglist.presentation.main
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,8 +23,9 @@ class MainViewModel(
         updateShopList()
     }
 
-    fun updateShopList() {
-        _shopList.value = getShopListUseCase.getShopList()
+    private fun updateShopList() {
+        val list = getShopListUseCase.getShopList()
+        _shopList.value = list
     }
 
     fun deleteItem(shopItem: ShopItem) {
