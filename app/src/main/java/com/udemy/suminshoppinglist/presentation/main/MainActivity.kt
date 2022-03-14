@@ -1,15 +1,10 @@
 package com.udemy.suminshoppinglist.presentation.main
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.udemy.domain.entities.ShopItem
-import com.udemy.suminshoppinglist.R
 import com.udemy.suminshoppinglist.databinding.ActivityMainBinding
 import com.udemy.suminshoppinglist.presentation.itemdetails.ItemDetailsActivity
 import com.udemy.suminshoppinglist.presentation.main.adapter.ShopListAdapter
@@ -45,8 +40,10 @@ class MainActivity : AppCompatActivity() {
     private fun settingsAdapter() {
         shopListAdapter = ShopListAdapter()
         binding.rcShopList.adapter = shopListAdapter
-        binding.rcShopList.recycledViewPool.setMaxRecycledViews(ShopListAdapter.VIEW_TYPE_ENABLED, ShopListAdapter.MAX_POOL_SIZE)
-        binding.rcShopList.recycledViewPool.setMaxRecycledViews(ShopListAdapter.VIEW_TYPE_DISABLED, ShopListAdapter.MAX_POOL_SIZE)
+        binding.rcShopList.recycledViewPool.setMaxRecycledViews(ShopListAdapter.VIEW_TYPE_ENABLED,
+            ShopListAdapter.MAX_POOL_SIZE)
+        binding.rcShopList.recycledViewPool.setMaxRecycledViews(ShopListAdapter.VIEW_TYPE_DISABLED,
+            ShopListAdapter.MAX_POOL_SIZE)
 
         onLongClickListenerShopItem()
         onTouchClickListenerShopItem()
@@ -75,7 +72,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun onTouchClickListenerShopItem() {
         shopListAdapter.onShopClickListener = {
-            val intent = ItemDetailsActivity.newIntentEditItem(this, it.name, it.count.toString(), it.id)
+            val intent =
+                ItemDetailsActivity.newIntentEditItem(this, it.id)
             startActivity(intent)
         }
     }
@@ -98,4 +96,21 @@ class MainActivity : AppCompatActivity() {
  * элемента списка несколько раз.
  * Даже если изменился всего один элемент, то нужно перерисовать весь список.
  * .let{} - позволяет делать что-то с объектом если он не null
+ *
+ * android:name="com.udemy.suminshoppinglist.presentation.ShopItemFragment"
+ * позволяет сразу вставить фрагмент в макет
+ * tools:layout="@layout/fragment_shop_item"
+ * позволяет предварительно видеть макет
+ * Фрагмент сначала прикрепляется к активити, потом создаётся view из макета.
+ * Обращение к view в методе onCreate у фрагмента делать не нужно, только в onCreateView
+ *
+ * requireActivity() - вызывается у Активити к которому прикрёплён фрагмент.
+ * Но! Фрагмент не может требовать чтобы активити была запущена каким-то определённым образом.
+ * (требовать параметры)
+ *
+ * viewLifecycleOwner - нужно передавать вместо контекста к view, будет использоваться жизненный цикл
+ * созданной view, если передать в LiveData - когда view умирает, LiveData отписывает его.
+ *
+ * activity и requireActivity() - отличия что activity вызывает нулабельный объект.
+ *
  */

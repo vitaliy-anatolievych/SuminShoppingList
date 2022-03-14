@@ -29,6 +29,10 @@ class ItemDetailsViewModel(
     val shouldCloseScreen: LiveData<Unit>
         get() = _shouldCloseScreen
 
+    fun getShopItem(itemId: Int): ShopItem {
+        return getShopItemUseCase.getShopItem(itemId)
+    }
+
     fun addShopItem(inputName: String?, inputCount: String?) {
         val name = parseName(inputName)
         val count = parseCount(inputCount)
