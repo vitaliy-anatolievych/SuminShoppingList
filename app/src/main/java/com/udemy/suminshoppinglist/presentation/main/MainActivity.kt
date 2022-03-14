@@ -33,8 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun settingButtonAdd() {
         binding.btnAddShopItem.setOnClickListener {
-            val intent = Intent(this, ItemDetailsActivity::class.java)
-            intent.putExtra(ItemDetailsActivity.ACTIVITY_MODE, ItemDetailsActivity.MODE_ADD)
+            val intent = ItemDetailsActivity.newIntentAddItem(this)
             startActivity(intent)
         }
     }
@@ -76,11 +75,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onTouchClickListenerShopItem() {
         shopListAdapter.onShopClickListener = {
-            val intent = Intent(this, ItemDetailsActivity::class.java)
-            intent.putExtra(ItemDetailsActivity.ACTIVITY_MODE, ItemDetailsActivity.MODE_EDIT)
-            intent.putExtra(ItemDetailsActivity.ITEM_OBJECT_NAME, it.name)
-            intent.putExtra(ItemDetailsActivity.ITEM_OBJECT_COUNT, it.count.toString())
-            intent.putExtra(ItemDetailsActivity.ITEM_OBJECT_ID, it.id)
+            val intent = ItemDetailsActivity.newIntentEditItem(this, it.name, it.count.toString(), it.id)
             startActivity(intent)
         }
     }
@@ -102,4 +97,5 @@ class MainActivity : AppCompatActivity() {
  * Метод findViewById тоже медленный и вызывается для каждого
  * элемента списка несколько раз.
  * Даже если изменился всего один элемент, то нужно перерисовать весь список.
+ * .let{} - позволяет делать что-то с объектом если он не null
  */

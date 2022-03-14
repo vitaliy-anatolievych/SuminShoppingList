@@ -1,6 +1,10 @@
 package com.udemy.suminshoppinglist.presentation.itemdetails
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.udemy.domain.entities.ShopItem
@@ -14,11 +18,18 @@ class ItemDetailsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityItemDetailsBinding.inflate(layoutInflater).also { setContentView(it.root) }
+        binding =
+            ActivityItemDetailsBinding.inflate(layoutInflater).also { setContentView(it.root) }
 
-        val activityMode = intent.getStringExtra(ACTIVITY_MODE)
+        launchRightMode()
 
-        when(activityMode) {
+        setInputErrorNameListener()
+        setInputErrorCountListener()
+        setShouldCloseScreenListener()
+    }
+
+    private fun launchRightMode() {
+        when (val activityMode = intent.getStringExtra(ACTIVITY_MODE)) {
             MODE_EDIT -> {
                 val name = intent.getStringExtra(ITEM_OBJECT_NAME)
                 val count = intent.getStringExtra(ITEM_OBJECT_COUNT)
@@ -35,11 +46,54 @@ class ItemDetailsActivity : AppCompatActivity() {
         }
     }
 
+    private fun setInputErrorNameListener() {
+        viewModel.errorInputName.observe(this) {
+            val message = if (it) {
+                "Ошибка ввода"
+            } else {
+                null
+            }
+            binding.tlName.error = message
+        }
+
+        binding.edName.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                binding.tlName.error = null
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+        })
+    }
+
+    private fun setInputErrorCountListener() {
+        viewModel.errorInputCount.observe(this) {
+            val message = if (it) {
+                "Ошибка ввода"
+            } else {
+                null
+            }
+            binding.tlCount.error = message
+        }
+
+        binding.edCount.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                binding.tlCount.error = null
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+        })
+    }
 
     private fun settingButtonSave(mode: String) {
-
-
-        when(mode) {
+        when (mode) {
             MODE_EDIT -> {
                 binding.btnSave.setOnClickListener {
                     val name = binding.tlName.editText?.text.toString()
@@ -48,16 +102,9 @@ class ItemDetailsActivity : AppCompatActivity() {
                     val id = intent.getIntExtra(ITEM_OBJECT_ID, ShopItem.UNDEFINED_ID)
 
                     if (id != ShopItem.UNDEFINED_ID) {
-                        if (isCorrectFieldName(name) && isCorrectFieldCount(count)) {
-                            viewModel.editShopItem(name, count.toInt(), id)
-                            this.finish()
-                        }
+                        viewModel.editShopItem(name, count, id)
                     } else {
-                        Toast.makeText(
-                            this,
-                            "Не добавлен id элемета в .puExtra",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        throw java.lang.RuntimeException("undefined id $id")
                     }
                 }
             }
@@ -66,52 +113,41 @@ class ItemDetailsActivity : AppCompatActivity() {
                     val name = binding.tlName.editText?.text.toString()
                     val count = binding.tlCount.editText?.text.toString()
 
-                    if (isCorrectFieldName(name) && isCorrectFieldCount(count)) {
-                        viewModel.addShopItem(name, count.toInt())
-                        this.finish()
-                    }
+                    viewModel.addShopItem(name, count)
                 }
             }
             else -> throw RuntimeException("Mode not fount $mode")
         }
     }
 
-    private fun isCorrectFieldName(name: String?): Boolean {
-        var isCorrect = true
-
-        if (name.isNullOrBlank() or name.isNullOrEmpty()) {
-            binding.edName.error = "Пустое поле"
-            isCorrect = false
+    private fun setShouldCloseScreenListener() {
+        viewModel.shouldCloseScreen.observe(this) {
+            finish()
         }
-        return isCorrect
-    }
-
-    private fun isCorrectFieldCount(count: String?): Boolean {
-        var isCorrect = true
-
-        if (count.isNullOrBlank() or count.isNullOrEmpty()) {
-            binding.edCount.error = "Пустое поле"
-            isCorrect = false
-        }
-        else {
-            try {
-                count?.toInt()
-            } catch (e: Exception) {
-                binding.edCount.error = "Требуется число"
-                isCorrect = false
-            }
-        }
-
-        return isCorrect
     }
 
     companion object {
-        const val ITEM_OBJECT_NAME = "itemObjectName"
-        const val ITEM_OBJECT_COUNT = "itemObjectCount"
-        const val ITEM_OBJECT_ID = "itemObjectId"
+        private const val ITEM_OBJECT_NAME = "itemObjectName"
+        private const val ITEM_OBJECT_COUNT = "itemObjectCount"
+        private const val ITEM_OBJECT_ID = "itemObjectId"
 
-        const val ACTIVITY_MODE = "activityMode"
-        const val MODE_EDIT = "modeEdit"
-        const val MODE_ADD = "modeAdd"
+        private const val ACTIVITY_MODE = "activityMode"
+        private const val MODE_EDIT = "modeEdit"
+        private const val MODE_ADD = "modeAdd"
+
+        fun newIntentAddItem(context: Context): Intent {
+            val intent = Intent(context, ItemDetailsActivity::class.java)
+            intent.putExtra(ACTIVITY_MODE, MODE_ADD)
+            return intent
+        }
+
+        fun newIntentEditItem(context: Context, name: String?, count: String?, id: Int): Intent {
+            val intent = Intent(context, ItemDetailsActivity::class.java)
+            intent.putExtra(ACTIVITY_MODE, MODE_EDIT)
+            intent.putExtra(ITEM_OBJECT_NAME, name)
+            intent.putExtra(ITEM_OBJECT_COUNT, count)
+            intent.putExtra(ITEM_OBJECT_ID, id)
+            return intent
+        }
     }
 }

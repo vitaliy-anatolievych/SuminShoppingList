@@ -12,25 +12,83 @@ import java.lang.Exception
 class ItemDetailsViewModel(
     private val addShopItemUseCase: AddShopItemUseCase,
     private val editShopItemUseCase: EditShopItemUseCase,
-    private val getShopItemUseCase: GetShopItemUseCase
-): ViewModel() {
+    private val getShopItemUseCase: GetShopItemUseCase,
+) : ViewModel() {
 
-    private val _errorInputName = MutableLiveData<String>()
-    val errorInputName: LiveData<String>
+    private val _errorInputName = MutableLiveData<Boolean>()
+    val errorInputName: LiveData<Boolean>
         get() = _errorInputName
 
-    private val _errorInputCount = MutableLiveData<String>()
-    val errorInputCount: LiveData<String>
+    private val _errorInputCount = MutableLiveData<Boolean>()
+    val errorInputCount: LiveData<Boolean>
         get() = _errorInputCount
 
-    fun addShopItem(name: String, count: Int) {
-        val item = ShopItem(name, count, true)
-        addShopItemUseCase.addShopItem(item)
+    /** Если в Activity никак не будет использоваться объект,
+    * можно установить как Unit */
+    private val _shouldCloseScreen = MutableLiveData<Unit>()
+    val shouldCloseScreen: LiveData<Unit>
+        get() = _shouldCloseScreen
+
+    fun addShopItem(inputName: String?, inputCount: String?) {
+        val name = parseName(inputName)
+        val count = parseCount(inputCount)
+
+        if (validateInput(name, count)) {
+            val item = ShopItem(name, count, true)
+            addShopItemUseCase.addShopItem(item)
+            finishWork()
+        }
     }
 
-    fun editShopItem(name: String, count: Int, itemId: Int) {
-        val item = getShopItemUseCase.getShopItem(itemId)
-        val newItem = item.copy(name, count, item.enabled)
-        editShopItemUseCase.editShopItem(newItem)
+    fun editShopItem(inputName: String?, inputCount: String?, itemId: Int) {
+        val name = parseName(inputName)
+        val count = parseCount(inputCount)
+
+        if (validateInput(name, count)) {
+            val item = getShopItemUseCase.getShopItem(itemId)
+            val newItem = item.copy(name, count)
+            editShopItemUseCase.editShopItem(newItem)
+            finishWork()
+        }
+    }
+
+    private fun parseName(inputName: String?): String {
+        return inputName?.trim() ?: ""
+    }
+
+    private fun parseCount(inputCount: String?): Int {
+        return try {
+            inputCount?.trim()?.toInt() ?: 0
+        } catch (e: Exception) {
+            0
+        }
+    }
+
+    private fun validateInput(name: String, count: Int): Boolean {
+        var result = true
+
+        if (name.isBlank() or name.isEmpty()) {
+            _errorInputName.value = true
+            result = false
+        }
+
+        if (count <= 0) {
+            _errorInputCount.value = true
+            result = false
+        }
+
+        return result
+    }
+
+    private fun finishWork() {
+        _shouldCloseScreen.value = Unit
+    }
+
+    private fun resetErrorInputName() {
+        _errorInputName.value = null
+    }
+
+    private fun resetErrorInputCount() {
+        _errorInputCount.value = null
     }
 }
