@@ -1,5 +1,6 @@
 package com.udemy.suminshoppinglist.presentation.itemdetails
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -32,7 +33,6 @@ class ShopItemFragment : Fragment() {
 
         activityMode = arguments?.getString(SCREEN_MODE) ?: UNDEFINED_MODE
         shopItemId = arguments?.getInt(ITEM_OBJECT_ID) ?: ShopItem.UNDEFINED_ID
-        phoneOrientation = arguments?.getSerializable(LAND_SCAPE_MODE) as PhoneOrientation
 
         return binding.root
     }
@@ -40,7 +40,6 @@ class ShopItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launchPhoneOrientation()
         launchRightMode()
 
         setInputErrorNameListener()
@@ -48,7 +47,14 @@ class ShopItemFragment : Fragment() {
         setShouldCloseScreenListener()
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        launchPhoneOrientation()
+    }
+
     private fun launchPhoneOrientation() {
+        phoneOrientation = arguments?.getSerializable(LAND_SCAPE_MODE) as PhoneOrientation
+
         if (phoneOrientation == PhoneOrientation.HORIZONTAL) {
             if (activity is UpdateList) updateList = activity as UpdateList
             else throw java.lang.RuntimeException("Activity with ShopList must impl UpdateList")
