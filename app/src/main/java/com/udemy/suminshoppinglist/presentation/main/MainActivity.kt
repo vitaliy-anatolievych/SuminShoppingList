@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), UpdateList {
     private fun launchFragment(fragment: Fragment) {
         supportFragmentManager.popBackStack() // чистит стек фрагментов в памяти
         supportFragmentManager.beginTransaction()
-            .add(R.id.shop_item_container_land, fragment)
+            .replace(R.id.shop_item_container_land, fragment)
             .addToBackStack(null)
             .commit()
     }

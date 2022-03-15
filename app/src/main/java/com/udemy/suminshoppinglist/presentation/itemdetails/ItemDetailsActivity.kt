@@ -15,7 +15,15 @@ class ItemDetailsActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item_details)
-        launchRightMode()
+        /**
+         * Это нужно для того, чтобы проверить пересоздавалось ли активити.
+         * Если активити не пересоздавалось, метод будет вызван 1 раз.
+         * (то есть мы не будем заново добавлять фрагмент, это сделает активити)
+         * Если пересоздавалось 2 раза.
+         */
+        if (savedInstanceState == null) {
+            launchRightMode()
+        }
     }
 
     private fun launchRightMode() {
