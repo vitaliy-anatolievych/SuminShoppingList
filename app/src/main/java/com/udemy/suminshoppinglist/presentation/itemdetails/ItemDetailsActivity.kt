@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.udemy.suminshoppinglist.R
-import com.udemy.suminshoppinglist.presentation.ShopItemFragment
+import com.udemy.suminshoppinglist.presentation.main.MainActivity
+import com.udemy.suminshoppinglist.presentation.utils.PhoneOrientation
+import com.udemy.suminshoppinglist.presentation.utils.UpdateList
 
-class ItemDetailsActivity : AppCompatActivity() {
+class ItemDetailsActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,18 +22,16 @@ class ItemDetailsActivity : AppCompatActivity() {
         val fragment = when (val activityMode = intent.getStringExtra(ACTIVITY_MODE)) {
             MODE_EDIT -> {
                 val shopItemId = intent.getIntExtra(ITEM_OBJECT_ID, 0)
-                Log.d("ParseError", "$activityMode , $shopItemId")
-                ShopItemFragment.newInstanceEditItem(shopItemId)
+                ShopItemFragment.newInstanceEditItem(shopItemId, PhoneOrientation.VERTICAL)
             }
-            MODE_ADD -> ShopItemFragment.newInstanceAddItem()
+            MODE_ADD -> ShopItemFragment.newInstanceAddItem(PhoneOrientation.VERTICAL)
             else -> throw RuntimeException("Mode not fount $activityMode")
         }
 
         supportFragmentManager.beginTransaction()
-            .add(R.id.shop_item_container, fragment)
+            .replace(R.id.shop_item_container, fragment)
             .commit()
     }
-
 
     companion object {
         private const val ITEM_OBJECT_ID = "itemObjectId"

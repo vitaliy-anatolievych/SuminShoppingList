@@ -1,4 +1,4 @@
-package com.udemy.suminshoppinglist.presentation
+package com.udemy.suminshoppinglist.presentation.itemdetails
 
 import android.os.Bundle
 import android.text.Editable
@@ -9,25 +9,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.udemy.domain.entities.ShopItem
 import com.udemy.suminshoppinglist.databinding.FragmentShopItemBinding
-import com.udemy.suminshoppinglist.presentation.itemdetails.ItemDetailsViewModel
+import com.udemy.suminshoppinglist.presentation.utils.PhoneOrientation
+import com.udemy.suminshoppinglist.presentation.utils.UpdateList
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ShopItemFragment() : Fragment() {
+class ShopItemFragment : Fragment() {
     private lateinit var binding: FragmentShopItemBinding
     private val viewModel by viewModel<ItemDetailsViewModel>()
+    private var updateList: UpdateList? = null
 
     private var activityMode: String = UNDEFINED_MODE
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
-
-    constructor(_activityMode: String) : this() {
-        activityMode = _activityMode
-    }
-
-    constructor(_activityMode: String, _shopItemId: Int): this() {
-        activityMode = _activityMode
-        shopItemId = _shopItemId
-    }
-
+    private lateinit var phoneOrientation: PhoneOrientation
 
 
     override fun onCreateView(
@@ -36,16 +29,30 @@ class ShopItemFragment() : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentShopItemBinding.inflate(inflater, container, false)
+
+        activityMode = arguments?.getString(SCREEN_MODE) ?: UNDEFINED_MODE
+        shopItemId = arguments?.getInt(ITEM_OBJECT_ID) ?: ShopItem.UNDEFINED_ID
+        phoneOrientation = arguments?.getSerializable(LAND_SCAPE_MODE) as PhoneOrientation
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        launchPhoneOrientation()
         launchRightMode()
+
         setInputErrorNameListener()
         setInputErrorCountListener()
         setShouldCloseScreenListener()
+    }
+
+    private fun launchPhoneOrientation() {
+        if (phoneOrientation == PhoneOrientation.HORIZONTAL) {
+            if (activity is UpdateList) updateList = activity as UpdateList
+            else throw java.lang.RuntimeException("Activity with ShopList must impl UpdateList")
+        }
     }
 
     private fun launchRightMode() {
@@ -140,20 +147,40 @@ class ShopItemFragment() : Fragment() {
     private fun setShouldCloseScreenListener() {
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
             activity?.onBackPressed() // нажимает кнопку назад
+            updateList?.update()
         }
     }
 
     companion object {
         private const val UNDEFINED_MODE = "undefinedMode"
+        private const val LAND_SCAPE_MODE = "landScapeMode"
+
+        private const val SCREEN_MODE = "screenMode"
         private const val MODE_EDIT = "modeEdit"
         private const val MODE_ADD = "modeAdd"
 
-        fun newInstanceAddItem(): ShopItemFragment {
-            return ShopItemFragment(MODE_ADD)
+        private const val ITEM_OBJECT_ID = "itemObjectId"
+
+        fun newInstanceAddItem(landScape: PhoneOrientation): ShopItemFragment {
+            val args = Bundle().apply {
+                // сначала создастся Bundle,
+                // а потом будут применены методы которые тут объявлены
+                putString(SCREEN_MODE, MODE_ADD)
+                putSerializable(LAND_SCAPE_MODE, landScape)
+            }
+            return ShopItemFragment().apply {
+                arguments = args
+            }
         }
 
-        fun newInstanceEditItem(shopItemId: Int): ShopItemFragment {
-            return ShopItemFragment(MODE_EDIT, shopItemId)
+        fun newInstanceEditItem(shopItemId: Int, landScape: PhoneOrientation): ShopItemFragment {
+            return ShopItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_EDIT)
+                    putInt(ITEM_OBJECT_ID, shopItemId)
+                    putSerializable(LAND_SCAPE_MODE, landScape)
+                }
+            }
         }
     }
 }

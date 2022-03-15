@@ -2,15 +2,20 @@ package com.udemy.suminshoppinglist.presentation.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.udemy.domain.entities.ShopItem
+import com.udemy.suminshoppinglist.R
 import com.udemy.suminshoppinglist.databinding.ActivityMainBinding
+import com.udemy.suminshoppinglist.presentation.itemdetails.ShopItemFragment
 import com.udemy.suminshoppinglist.presentation.itemdetails.ItemDetailsActivity
 import com.udemy.suminshoppinglist.presentation.main.adapter.ShopListAdapter
+import com.udemy.suminshoppinglist.presentation.utils.PhoneOrientation
+import com.udemy.suminshoppinglist.presentation.utils.UpdateList
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), UpdateList {
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel by viewModel<MainViewModel>()
     private lateinit var shopListAdapter: ShopListAdapter
@@ -26,10 +31,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun isOnePaneMode(): Boolean {
+        return binding.shopItemContainerLand == null
+    }
+
+    private fun launchFragment(fragment: Fragment) {
+        supportFragmentManager.popBackStack() // чистит стек фрагментов в памяти
+        supportFragmentManager.beginTransaction()
+            .add(R.id.shop_item_container_land, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun settingButtonAdd() {
         binding.btnAddShopItem.setOnClickListener {
-            val intent = ItemDetailsActivity.newIntentAddItem(this)
-            startActivity(intent)
+            if (isOnePaneMode()) {
+                val intent = ItemDetailsActivity.newIntentAddItem(this)
+                startActivity(intent)
+            } else {
+                launchFragment(ShopItemFragment.newInstanceAddItem(PhoneOrientation.HORIZONTAL))
+            }
         }
     }
 
@@ -72,9 +93,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun onTouchClickListenerShopItem() {
         shopListAdapter.onShopClickListener = {
-            val intent =
-                ItemDetailsActivity.newIntentEditItem(this, it.id)
-            startActivity(intent)
+            if (isOnePaneMode()) {
+                val intent =
+                    ItemDetailsActivity.newIntentEditItem(this, it.id)
+                startActivity(intent)
+            } else {
+                launchFragment(ShopItemFragment.newInstanceEditItem(it.id, PhoneOrientation.HORIZONTAL))
+            }
         }
     }
 
@@ -84,8 +109,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Для портретной ориентации
     override fun onResume() {
         super.onResume()
+        mainViewModel.updateShopList()
+    }
+
+    // Для горизонтальной ориентации
+    override fun update() {
         mainViewModel.updateShopList()
     }
 }
@@ -97,7 +128,7 @@ class MainActivity : AppCompatActivity() {
  * Даже если изменился всего один элемент, то нужно перерисовать весь список.
  * .let{} - позволяет делать что-то с объектом если он не null
  *
- * android:name="com.udemy.suminshoppinglist.presentation.ShopItemFragment"
+ * android:name="com.udemy.suminshoppinglist.presentation.itemdetails.ShopItemFragment"
  * позволяет сразу вставить фрагмент в макет
  * tools:layout="@layout/fragment_shop_item"
  * позволяет предварительно видеть макет
@@ -112,5 +143,9 @@ class MainActivity : AppCompatActivity() {
  * созданной view, если передать в LiveData - когда view умирает, LiveData отписывает его.
  *
  * activity и requireActivity() - отличия что activity вызывает нулабельный объект.
+ *
+ *  В конструкторе нельзя передавать значения, если при перевороте экрана\смены языка,
+ *  система пересоздаст фрагмент, то будет вызван пустой конструктор, а если есть параметры -
+ *  то приложение упадёт.
  *
  */
