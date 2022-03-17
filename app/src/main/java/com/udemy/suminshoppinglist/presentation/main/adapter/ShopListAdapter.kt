@@ -64,6 +64,11 @@ class ShopListAdapter :
         holder._binding.root.rootView.setOnClickListener {
             onShopClickListener?.invoke(shopItem)
         }
+
+        holder._binding.root.rootView.setOnLongClickListener {
+            onShopLongClickListener?.invoke(shopItem)
+            true
+        }
     }
 
 //        holder.tvName?.text = shopItem.name
