@@ -1,9 +1,9 @@
 package com.udemy.suminshoppinglist.presentation.main.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -19,31 +19,21 @@ class ShopListAdapter :
     var onShopLongClickListener: ((ShopItem) -> Unit)? = null
     var onShopClickListener: ((ShopItem) -> Unit)? = null
 
-
     // Хранит элементы чтобы не вызывать много раз findViewById
-    inner class ShopItemViewHolder(val _binding: ViewBinding) :
-        RecyclerView.ViewHolder(_binding.root) {
-
-
-        //        val tvName: TextView? = view.findViewById(R.id.tvName)
-//        val tvCount: TextView? = view.findViewById(R.id.tvCount)
-    }
+    inner class ShopItemViewHolder(val _binding: ViewDataBinding) :
+        RecyclerView.ViewHolder(_binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-        val binding = when (viewType) {
-            VIEW_TYPE_ENABLED -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.shop_item_enabled, parent, false)
-                ShopItemEnabledBinding.bind(view)
-            }
-            VIEW_TYPE_DISABLED -> {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.shop_item_disabled, parent, false)
-                ShopItemDisabledBinding.bind(view)
-            }
+        val layout = when (viewType) {
+            VIEW_TYPE_ENABLED -> R.layout.shop_item_enabled
+            VIEW_TYPE_DISABLED -> R.layout.shop_item_disabled
             else -> throw RuntimeException("Unknown ViewType $viewType")
         }
 
+        val binding = DataBindingUtil.inflate<ViewDataBinding>(LayoutInflater.from(parent.context),
+            layout,
+            parent,
+            false)
         return ShopItemViewHolder(binding)
     }
 
@@ -71,22 +61,8 @@ class ShopListAdapter :
         }
     }
 
-//        holder.tvName?.text = shopItem.name
-//        holder.tvCount?.text = shopItem.count.toString()
-//
-//        holder.view.setOnLongClickListener {
-//            onShopLongClickListener?.invoke(shopItem)
-//            true
-//        }
-//
-//        holder.view.setOnClickListener {
-//            onShopClickListener?.invoke(shopItem)
-//        }
-
-
     // нужен для того, чтобы использовать нужный макет в зависимости от типа элемента
     override fun getItemViewType(position: Int): Int {
-//        val shopItem = shopList[position]
         val shopItem = getItem(position)
 
         return if (shopItem.enabled) {

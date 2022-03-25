@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SuminShoppingList</string>
+    <string name="button_add">ButtonAdd</string>
 </resources>
