@@ -70,12 +70,14 @@ class ShopItemFragment : Fragment() {
     private fun launchRightMode() {
         when (activityMode) {
             MODE_EDIT -> {
-                val shopItem = viewModel.getShopItem(itemId = shopItemId)
+                viewModel.getShopItem(itemId = shopItemId) {
+                    activity?.runOnUiThread {
+                        binding.tlName.editText?.setText(it.name)
+                        binding.tlCount.editText?.setText(it.count.toString())
 
-                binding.tlName.editText?.setText(shopItem.name)
-                binding.tlCount.editText?.setText(shopItem.count.toString())
-
-                settingButtonSave()
+                        settingButtonSave()
+                    }
+                }
             }
             MODE_ADD -> {
                 settingButtonSave()

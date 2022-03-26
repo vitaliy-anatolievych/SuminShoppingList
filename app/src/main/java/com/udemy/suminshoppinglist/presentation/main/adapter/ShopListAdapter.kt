@@ -6,7 +6,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import com.udemy.domain.entities.ShopItem
 import com.udemy.suminshoppinglist.R
 import com.udemy.suminshoppinglist.databinding.ShopItemDisabledBinding

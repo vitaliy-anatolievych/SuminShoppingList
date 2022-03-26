@@ -4,25 +4,25 @@ import com.udemy.domain.usecases.*
 import org.koin.dsl.module
 
 val domainModule = module {
-    factory<DeleteShopItemUseCase> {
+    factory {
         DeleteShopItemUseCase(shopListRepository = get())
     }
 
-    factory<GetShopListUseCase> {
+    factory {
         GetShopListUseCase(shopListRepository = get())
     }
 
-    factory<EditShopItemUseCase> {
+    factory {
         EditShopItemUseCase(shopListRepository = get())
     }
 
-    factory<AddShopItemUseCase> {
+    factory {
         AddShopItemUseCase(
             shopListRepository = get()
         )
     }
 
-    factory<GetShopItemUseCase> {
+    factory {
         GetShopItemUseCase(
             shopListRepository = get()
         )

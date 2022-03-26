@@ -5,7 +5,7 @@ import com.udemy.domain.repositories.ShopListRepository
 
 class DeleteShopItemUseCase(private val shopListRepository: ShopListRepository) {
 
-    fun deleteShopItem(shopItem: ShopItem) {
+    suspend fun deleteShopItem(shopItem: ShopItem) {
         shopListRepository.deleteShopItem(shopItem)
     }
 }

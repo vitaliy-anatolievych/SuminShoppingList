@@ -3,12 +3,9 @@ package com.udemy.suminshoppinglist.presentation.itemdetails
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.udemy.suminshoppinglist.R
-import com.udemy.suminshoppinglist.presentation.main.MainActivity
 import com.udemy.suminshoppinglist.presentation.utils.PhoneOrientation
-import com.udemy.suminshoppinglist.presentation.utils.UpdateList
 
 class ItemDetailsActivity: AppCompatActivity() {
 

@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 val dataModule = module {
     single<ShopListRepository> {
-        ShopListRepositoryImpl()
+        ShopListRepositoryImpl(application = get())
     }
 }
