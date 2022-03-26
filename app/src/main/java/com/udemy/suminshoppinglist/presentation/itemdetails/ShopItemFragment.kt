@@ -15,7 +15,11 @@ import com.udemy.suminshoppinglist.presentation.utils.UpdateList
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ShopItemFragment : Fragment() {
-    private lateinit var binding: FragmentShopItemBinding
+    private var _binding: FragmentShopItemBinding? = null
+    private val binding: FragmentShopItemBinding
+        get() = _binding ?: throw java.lang.RuntimeException("FragmentShopItemBinding == null")
+
+
     private val viewModel by viewModel<ItemDetailsViewModel>()
     private var updateList: UpdateList? = null
 
@@ -29,7 +33,9 @@ class ShopItemFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentShopItemBinding.inflate(inflater, container, false)
+        _binding = FragmentShopItemBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         activityMode = arguments?.getString(SCREEN_MODE) ?: UNDEFINED_MODE
         shopItemId = arguments?.getInt(ITEM_OBJECT_ID) ?: ShopItem.UNDEFINED_ID
@@ -79,14 +85,6 @@ class ShopItemFragment : Fragment() {
     }
 
     private fun setInputErrorNameListener() {
-        viewModel.errorInputName.observe(viewLifecycleOwner) {
-            val message = if (it) {
-                "Ошибка ввода"
-            } else {
-                null
-            }
-            binding.tlName.error = message
-        }
 
         binding.edName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -102,14 +100,6 @@ class ShopItemFragment : Fragment() {
     }
 
     private fun setInputErrorCountListener() {
-        viewModel.errorInputCount.observe(viewLifecycleOwner) {
-            val message = if (it) {
-                "Ошибка ввода"
-            } else {
-                null
-            }
-            binding.tlCount.error = message
-        }
 
         binding.edCount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -155,6 +145,11 @@ class ShopItemFragment : Fragment() {
             activity?.onBackPressed() // нажимает кнопку назад
             updateList?.update()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

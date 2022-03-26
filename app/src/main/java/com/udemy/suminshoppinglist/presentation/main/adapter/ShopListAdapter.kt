@@ -42,12 +42,10 @@ class ShopListAdapter :
 
         when (holder._binding) {
             is ShopItemEnabledBinding -> {
-                holder._binding.tvName.text = shopItem.name
-                holder._binding.tvCount.text = shopItem.count.toString()
+                holder._binding.shopItem = shopItem
             }
             is ShopItemDisabledBinding -> {
-                holder._binding.tvName.text = shopItem.name
-                holder._binding.tvCount.text = shopItem.count.toString()
+                holder._binding.shopItem = shopItem
             }
         }
 
