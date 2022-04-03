@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Adam/AndroidStudioProjects/SuminShoppingList/app/src/main/res/drawable/corners_button.xml" value="0.5305" />
         <entry key="..\:/Users/Adam/AndroidStudioProjects/SuminShoppingList/app/src/main/res/layout-land/activity_main.xml" value="0.4541446208112875" />
         <entry key="..\:/Users/Adam/AndroidStudioProjects/SuminShoppingList/app/src/main/res/layout/activity_item_details.xml" value="0.5364583333333334" />
         <entry key="..\:/Users/Adam/AndroidStudioProjects/SuminShoppingList/app/src/main/res/layout/activity_main.xml" value="0.5364583333333334" />
@@ -10,7 +11,7 @@
         <entry key="..\:/Users/Adam/AndroidStudioProjects/SuminShoppingList/app/src/main/res/layout/dyadya_ne_goni.xml" value="0.5364583333333334" />
         <entry key="..\:/Users/Adam/AndroidStudioProjects/SuminShoppingList/app/src/main/res/layout/fragment_shop_item.xml" value="0.5364583333333334" />
         <entry key="..\:/Users/Adam/AndroidStudioProjects/SuminShoppingList/app/src/main/res/layout/shop_item_disabled.xml" value="0.5364583333333334" />
-        <entry key="..\:/Users/Adam/AndroidStudioProjects/SuminShoppingList/app/src/main/res/layout/shop_item_enabled.xml" value="0.5364583333333334" />
+        <entry key="..\:/Users/Adam/AndroidStudioProjects/SuminShoppingList/app/src/main/res/layout/shop_item_enabled.xml" value="0.5" />
       </map>
     </option>
   </component>
