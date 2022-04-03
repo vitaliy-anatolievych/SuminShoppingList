@@ -3,26 +3,39 @@ package com.udemy.suminshoppinglist.presentation.main
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.udemy.domain.entities.ShopItem
 import com.udemy.suminshoppinglist.R
+import com.udemy.suminshoppinglist.app.App
 import com.udemy.suminshoppinglist.databinding.ActivityMainBinding
-import com.udemy.suminshoppinglist.presentation.itemdetails.ShopItemFragment
 import com.udemy.suminshoppinglist.presentation.itemdetails.ItemDetailsActivity
+import com.udemy.suminshoppinglist.presentation.itemdetails.ShopItemFragment
 import com.udemy.suminshoppinglist.presentation.main.adapter.ShopListAdapter
 import com.udemy.suminshoppinglist.presentation.utils.PhoneOrientation
 import com.udemy.suminshoppinglist.presentation.utils.UpdateList
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.udemy.suminshoppinglist.presentation.utils.ViewModelFactory
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), UpdateList {
     private lateinit var binding: ActivityMainBinding
-    private val mainViewModel by viewModel<MainViewModel>()
     private lateinit var shopListAdapter: ShopListAdapter
+    private lateinit var mainViewModel: MainViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (application as App).component
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
+        mainViewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+
         settingsAdapter()
         settingButtonAdd()
 

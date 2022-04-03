@@ -1,16 +1,15 @@
 package com.udemy.data.repositories
 
-import android.app.Application
-import com.udemy.data.db.AppDataBase
+import com.udemy.data.db.ShopListDao
 import com.udemy.data.mappers.ShopListMapper
 import com.udemy.domain.entities.ShopItem
 import com.udemy.domain.repositories.ShopListRepository
+import javax.inject.Inject
 
-class ShopListRepositoryImpl(
-    application: Application
+class ShopListRepositoryImpl @Inject constructor(
+    private val shopListDao: ShopListDao,
+    private val mapper: ShopListMapper
 ): ShopListRepository {
-    private val shopListDao = AppDataBase.getInstance(application).shopListDao()
-    private val mapper = ShopListMapper()
 
 
     override suspend fun addShopItem(shopItem: ShopItem) {

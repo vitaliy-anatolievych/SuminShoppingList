@@ -1,19 +1,21 @@
 package com.udemy.suminshoppinglist.presentation.main
 
-import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.udemy.domain.entities.ShopItem
 import com.udemy.domain.usecases.DeleteShopItemUseCase
 import com.udemy.domain.usecases.EditShopItemUseCase
 import com.udemy.domain.usecases.GetShopListUseCase
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel(
-    application: Application,
+class MainViewModel @Inject constructor(
     private val getShopListUseCase: GetShopListUseCase,
     private val deleteShopItemUseCase: DeleteShopItemUseCase,
     private val editShopItemUseCase: EditShopItemUseCase,
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _shopList = MutableLiveData<List<ShopItem>>()
     val shopList: LiveData<List<ShopItem>>

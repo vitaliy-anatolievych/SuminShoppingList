@@ -2,8 +2,9 @@ package com.udemy.data.mappers
 
 import com.udemy.data.models.ShopItemDbModel
 import com.udemy.domain.entities.ShopItem
+import javax.inject.Inject
 
-class ShopListMapper {
+class ShopListMapper @Inject constructor(){
 
     fun mapEntityToDbModel(shopItem: ShopItem): ShopItemDbModel {
         return ShopItemDbModel(

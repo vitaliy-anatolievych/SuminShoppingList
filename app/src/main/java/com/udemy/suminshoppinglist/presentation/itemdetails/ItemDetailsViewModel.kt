@@ -1,22 +1,21 @@
 package com.udemy.suminshoppinglist.presentation.itemdetails
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udemy.domain.entities.ShopItem
 import com.udemy.domain.usecases.AddShopItemUseCase
 import com.udemy.domain.usecases.EditShopItemUseCase
 import com.udemy.domain.usecases.GetShopItemUseCase
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ItemDetailsViewModel(
-    application: Application,
+class ItemDetailsViewModel @Inject constructor(
     private val addShopItemUseCase: AddShopItemUseCase,
     private val editShopItemUseCase: EditShopItemUseCase,
     private val getShopItemUseCase: GetShopItemUseCase,
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _errorInputName = MutableLiveData<Boolean>()
     val errorInputName: LiveData<Boolean>
