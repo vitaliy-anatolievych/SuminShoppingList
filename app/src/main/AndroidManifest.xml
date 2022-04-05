@@ -23,6 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="com.udemy.suminshoppinglist"
+            android:name=".providers.ShopListProviders"
+            android:exported="true"
+            />
     </application>
-
 </manifest>

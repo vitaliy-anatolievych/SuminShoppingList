@@ -59,13 +59,15 @@ class TestSwipeController(private val viewModel: MainViewModel, private val  sho
                 val alertDialog = AlertDialog.Builder(recyclerView.context)
                     .setTitle("Title")
                     .setMessage("Удалить?")
-                    .setCancelable(false)
                     .setPositiveButton("Да") { _, _ ->
                         val item = shopListAdapter.currentList[viewHolder.adapterPosition]
                         viewModel.deleteItem(item)
                         isAlertDialogShowed = false
                     }
                     .setNegativeButton("Нет") { _, _ ->
+                        isAlertDialogShowed = false
+                    }
+                    .setOnCancelListener {
                         isAlertDialogShowed = false
                     }
 

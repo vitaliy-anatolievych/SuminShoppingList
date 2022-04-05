@@ -1,6 +1,8 @@
 package com.udemy.suminshoppinglist.presentation.main
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -13,10 +15,12 @@ import com.udemy.suminshoppinglist.databinding.ActivityMainBinding
 import com.udemy.suminshoppinglist.presentation.itemdetails.ItemDetailsActivity
 import com.udemy.suminshoppinglist.presentation.itemdetails.ShopItemFragment
 import com.udemy.suminshoppinglist.presentation.main.adapter.ShopListAdapter
+import com.udemy.suminshoppinglist.presentation.main.controllers.TestSwipeController
 import com.udemy.suminshoppinglist.presentation.utils.PhoneOrientation
 import com.udemy.suminshoppinglist.presentation.utils.UpdateList
 import com.udemy.suminshoppinglist.presentation.utils.ViewModelFactory
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), UpdateList {
     private lateinit var binding: ActivityMainBinding
@@ -41,6 +45,32 @@ class MainActivity : AppCompatActivity(), UpdateList {
 
         mainViewModel.shopList.observe(this) {
             showList(it)
+        }
+
+        thread {
+            val cursor = contentResolver.query(
+                Uri.parse("content://com.udemy.suminshoppinglist/shop_items"),
+                null,
+                null,
+                null
+            )
+
+            while (cursor?.moveToNext() == true) {
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                val count = cursor.getInt(cursor.getColumnIndexOrThrow("count"))
+                val enabled = cursor.getInt(cursor.getColumnIndexOrThrow("enabled")) > 0
+
+                val shopItem = ShopItem(
+                    id = id,
+                    name = name,
+                    count = count,
+                    enabled = enabled
+                )
+
+                Log.d("Cursor", "${shopItem.toString()}")
+            }
+            cursor?.close()
         }
     }
 
@@ -97,7 +127,14 @@ class MainActivity : AppCompatActivity(), UpdateList {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val item = shopListAdapter.currentList[viewHolder.adapterPosition]
-                mainViewModel.deleteItem(item)
+//                mainViewModel.deleteItem(item)
+                thread {
+                    contentResolver.delete(
+                        Uri.parse("content://com.udemy.suminshoppinglist/shop_items"),
+                        null,
+                        arrayOf(item.id.toString())
+                    )
+                }
             }
         }
         val itemTouchHelper = ItemTouchHelper(callback)

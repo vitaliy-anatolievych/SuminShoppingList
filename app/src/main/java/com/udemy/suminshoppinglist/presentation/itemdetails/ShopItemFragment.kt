@@ -1,6 +1,8 @@
 package com.udemy.suminshoppinglist.presentation.itemdetails
 
+import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,6 +18,7 @@ import com.udemy.suminshoppinglist.presentation.utils.PhoneOrientation
 import com.udemy.suminshoppinglist.presentation.utils.UpdateList
 import com.udemy.suminshoppinglist.presentation.utils.ViewModelFactory
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 class ShopItemFragment : Fragment() {
     private var _binding: FragmentShopItemBinding? = null
@@ -146,7 +149,18 @@ class ShopItemFragment : Fragment() {
                     val name = binding.tlName.editText?.text.toString()
                     val count = binding.tlCount.editText?.text.toString()
 
-                    viewModel.addShopItem(name, count)
+//                    viewModel.addShopItem(name, count)
+                    thread {
+                        context?.contentResolver?.insert(
+                            Uri.parse("content://com.udemy.suminshoppinglist/shop_items"),
+                            ContentValues().apply {
+                                put("id", 0)
+                                put("name", name)
+                                put("count", count.toInt())
+                                put("enabled", true)
+                            }
+                        )
+                    }
                 }
             }
             else -> throw RuntimeException("Mode not fount $activityMode")
