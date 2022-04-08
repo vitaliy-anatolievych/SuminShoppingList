@@ -1,7 +1,7 @@
 package com.udemy.suminshoppinglist.di
 
 import android.app.Application
-import com.udemy.suminshoppinglist.providers.ShopListProviders
+import com.udemy.data.providers.ShopListProviders
 import com.udemy.suminshoppinglist.di.scope.ApplicationScope
 import com.udemy.suminshoppinglist.presentation.itemdetails.ShopItemFragment
 import com.udemy.suminshoppinglist.presentation.main.MainActivity
