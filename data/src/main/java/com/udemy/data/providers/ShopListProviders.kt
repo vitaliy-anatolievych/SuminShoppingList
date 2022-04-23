@@ -5,22 +5,26 @@ import android.content.ContentValues
 import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
-import com.udemy.data.db.AppDataBase
 import com.udemy.data.db.ShopListDao
-import com.udemy.data.db.ShopListDao_Impl
-import com.udemy.data.dependency.DataDependency
+import com.udemy.data.di.DaggerDataComponent
+import com.udemy.data.di.DataDependency
 import com.udemy.data.mappers.ShopListMapper
 import com.udemy.domain.entities.ShopItem
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 class ShopListProviders : ContentProvider() {
 
-    private val dataDependency: DataDependency? = null
-
+    @Inject
     lateinit var shopListDao: ShopListDao
 
+    @Inject
     lateinit var mapper: ShopListMapper
+
+    private val component by lazy {
+        DaggerDataComponent.factory().create(
+            (context as DataDependency.DependencyProvider).getDataDependency()
+        )
+    }
 
     private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
         addURI("com.udemy.suminshoppinglist", "shop_items", GET_SHOP_ITEMS_QUERY)
@@ -28,14 +32,8 @@ class ShopListProviders : ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
+        component.inject(this)
         // Если создание провайдера прошло успешно, то вернуть true
-        if (dataDependency != null) {
-            val context = dataDependency.getApplication()
-            shopListDao = AppDataBase.getInstance(context).shopListDao()
-            mapper = ShopListMapper()
-        } else {
-            throw RuntimeException("dataDependency == null")
-        }
         return true
     }
 

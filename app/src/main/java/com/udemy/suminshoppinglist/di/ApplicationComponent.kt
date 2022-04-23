@@ -1,6 +1,7 @@
 package com.udemy.suminshoppinglist.di
 
 import android.app.Application
+import com.udemy.data.di.DataDependency
 import com.udemy.data.providers.ShopListProviders
 import com.udemy.suminshoppinglist.di.scope.ApplicationScope
 import com.udemy.suminshoppinglist.presentation.itemdetails.ShopItemFragment
@@ -9,8 +10,13 @@ import dagger.BindsInstance
 import dagger.Component
 
 @ApplicationScope
-@Component(modules = [DataModule::class, ViewModelModule::class])
-interface ApplicationComponent {
+@Component(
+    modules = [
+        DataModule::class,
+        ViewModelModule::class
+    ],
+)
+interface ApplicationComponent : DataDependency {
 
     fun inject(mainActivity: MainActivity)
 
